@@ -55,4 +55,11 @@ public class ArtistController {
     public ArtistResponse getArtistOfTheDay() {
         return artistService.getArtistOfTheDay();
     }
+
+//Added this api for my reference
+    @GetMapping("/artists")
+    public List<ArtistResponse> getAllArtists() {
+        return artistService.getAllArtists();
+    }
 }
+

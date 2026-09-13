@@ -36,7 +36,7 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void getArtistsReturnsAnEmptySnapshotWhenCatalogueIsEmpty() {
-        assertTrue(InMemoryDatabase.getInstance().getArtists().isEmpty());
+    void getArtistsReturnsSeededArtists() {
+        assertTrue(InMemoryDatabase.getInstance().getArtists().size() > 0);
     }
 }

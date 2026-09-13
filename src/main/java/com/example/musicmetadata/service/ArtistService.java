@@ -54,6 +54,14 @@ public class ArtistService {
         return toArtistResponse(toArtist(artists.get(artistIndex)));
     }
 
+    //get method for my local testing
+    public List<ArtistResponse> getAllArtists() {
+        return artistRepository.getAllArtists().stream()
+                .map(this::toArtist)
+                .map(this::toArtistResponse)
+                .toList();
+    }
+
     private Artist toArtist(ArtistDao artist) {
         return new Artist(artist.id(), artist.name());
     }

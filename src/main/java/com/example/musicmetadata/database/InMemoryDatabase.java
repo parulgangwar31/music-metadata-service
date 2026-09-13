@@ -10,6 +10,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public final class InMemoryDatabase {
 
+    private static final List<ArtistDao> DEFAULT_ARTISTS = List.of(
+            new ArtistDao(1L, "Adele"),
+            new ArtistDao(2L, "Taylor Swift"),
+            new ArtistDao(3L, "The Weeknd")
+    );
     private static final InMemoryDatabase INSTANCE = new InMemoryDatabase();
 
     private final Map<Long, ArtistDao> artists = new ConcurrentHashMap<>();
@@ -17,10 +22,19 @@ public final class InMemoryDatabase {
     private final AtomicLong trackIdSequence = new AtomicLong();
 
     private InMemoryDatabase() {
+        seedDefaultArtists();
     }
 
     public static InMemoryDatabase getInstance() {
         return INSTANCE;
+    }
+
+    public void addArtist(long artistId, String name) {
+        artists.put(artistId, new ArtistDao(artistId, name));
+    }
+
+    private void seedDefaultArtists() {
+        DEFAULT_ARTISTS.forEach(artist -> artists.put(artist.id(), artist));
     }
 
     public TrackDao addTrack(long artistId, String title, String genre, int lengthInSeconds) {

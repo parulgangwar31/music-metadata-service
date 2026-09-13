@@ -26,4 +26,8 @@ public class ArtistRepository {
     public List<ArtistDao> getArtists() {
         return database.getArtists();
     }
+
+    public List<ArtistDao> getAllArtists() {
+        return database.getArtists();
+    }
 }

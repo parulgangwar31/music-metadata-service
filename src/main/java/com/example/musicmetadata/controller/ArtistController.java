@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,6 +32,19 @@ public class ArtistController {
     public ResponseEntity<TrackResponse> addTrack(
             @PathVariable long artistId,
             @RequestBody AddTrackRequest request) {
+        if (!artistService.artistExists(artistId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist does not exist: " + artistId);
+        }
+        if (request == null || request.title() == null || request.title().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Track title is required");
+        }
+        if (request.genre() == null || request.genre().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Track genre is required");
+        }
+        if (request.lengthInSeconds() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Track length is required and must be greater than zero");
+        }
+
         TrackResponse response = artistService.addTrack(
                 artistId,
                 request.title(),
@@ -43,20 +57,31 @@ public class ArtistController {
     public ArtistResponse updateArtistName(
             @PathVariable long artistId,
             @RequestBody UpdateArtistNameRequest request) {
+        if (!artistService.artistExists(artistId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist does not exist: " + artistId);
+        }
+        if (request.name() == null || request.name().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Artist name is required");
+        }
         return artistService.updateArtistName(artistId, request.name());
     }
 
     @GetMapping("/artists/{artistId}/tracks")
     public List<TrackResponse> getArtistTracks(@PathVariable long artistId) {
+        if (!artistService.artistExists(artistId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Artist does not exist: " + artistId);
+        }
         return artistService.getArtistTracks(artistId);
     }
 
     @GetMapping("/artists/artist-of-the-day")
     public ArtistResponse getArtistOfTheDay() {
+        if (artistService.getAllArtists().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No artists exist");
+        }
         return artistService.getArtistOfTheDay();
     }
 
-//Added this api for my reference
     @GetMapping("/artists")
     public List<ArtistResponse> getAllArtists() {
         return artistService.getAllArtists();

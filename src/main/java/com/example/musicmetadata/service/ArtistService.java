@@ -42,6 +42,11 @@ public class ArtistService {
                 .toList();
     }
 
+    public boolean artistExists(long artistId) {
+        return artistRepository.getArtists().stream()
+                .anyMatch(artist -> artist.id() == artistId);
+    }
+
     public ArtistResponse getArtistOfTheDay() {
         List<ArtistDao> artists = artistRepository.getArtists();
         if (artists.isEmpty()) {
